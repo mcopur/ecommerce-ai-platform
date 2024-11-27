@@ -1,39 +1,38 @@
-"""
-Item definitions for product data collection and validation.
-"""
-from typing import Dict, List, Optional
-from datetime import datetime
-
-import scrapy
-from pydantic import BaseModel
-from itemloaders.processors import TakeFirst, Join, MapCompose
+from scrapy import Item, Field
+from itemloaders.processors import TakeFirst, Join, Identity
 
 
-class ProductBase(BaseModel):
-    """Base model for product data validation."""
-    name: str
-    price: float
-    brand: str
-    url: Optional[str] = None
+class ProductBase(Item):
+    """
+    Temel ürün sınıfı - tüm ürün tiplerinin temel sınıfı
+    """
+    name = Field()
+    url = Field()
+    created_at = Field()
+    updated_at = Field()
 
 
-class ProductItem(scrapy.Item):
-    """Scrapy item for product data collection."""
-    name = scrapy.Field(
-        input_processor=MapCompose(str.strip),
+class ProductItem(ProductBase):
+    """
+    E-ticaret ürünleri için özelleştirilmiş ürün sınıfı
+    """
+    name = Field(
+        input_processor=TakeFirst(),
         output_processor=TakeFirst()
     )
-    price = scrapy.Field(
-        input_processor=MapCompose(
-            lambda x: x.replace('TL', '').strip().replace(',', '.'),
-            float
-        ),
+    price = Field(
+        input_processor=TakeFirst(),
         output_processor=TakeFirst()
     )
-    brand = scrapy.Field(
-        input_processor=MapCompose(str.strip),
+    brand = Field(
+        input_processor=TakeFirst(),
         output_processor=TakeFirst()
     )
-    url = scrapy.Field(
+    url = Field(
+        input_processor=TakeFirst(),
+        output_processor=TakeFirst()
+    )
+    specifications = Field(
+        input_processor=Identity(),
         output_processor=TakeFirst()
     )

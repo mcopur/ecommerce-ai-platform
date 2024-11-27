@@ -24,7 +24,7 @@ USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
 # Configure item pipelines
 ITEM_PIPELINES = {
     'src.data_collection.pipelines.ValidationPipeline': 300,
-    'src.data_collection.pipelines.DuplicatesPipeline': 400,
+    'src.data_collection.pipelines.DuplicatesPipeline': 500,
 }
 
 # Output Settings
