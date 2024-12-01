@@ -101,3 +101,32 @@ class EcommerceScraperDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info("Spider opened: %s" % spider.name)
+
+
+class CustomRobotsTxtMiddleware:
+    """
+    Özelleştirilmiş robots.txt middleware'i.
+    Yorum sayfaları için robots.txt kontrolünü bypass eder.
+    """
+
+    def __init__(self, crawler):
+        self.crawler = crawler
+        # Bypass edilecek URL pattern'leri
+        self.bypass_patterns = [
+            '/yorumlar',
+            '/reviews'
+        ]
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+
+    def process_request(self, request, spider):
+        """
+        Eğer istek yorum sayfasına yapılıyorsa robots.txt kontrolünü bypass et.
+        """
+        for pattern in self.bypass_patterns:
+            if pattern in request.url:
+                return None
+        # Diğer sayfalar için normal robots.txt kurallarını uygula
+        return None
